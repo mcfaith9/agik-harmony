@@ -1,13 +1,13 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
 
-import LoginPage from '@/components/pages/LoginPage.vue'
-import RegisterPage from '@/components/pages/RegisterPage.vue'
-import DashboardPage from '@/components/pages/DashboardPage.vue'
+import AppLogin from '@/components/pages/AppLogin.vue';
+// import RegisterPage from '@/components/pages/RegisterPage.vue';
+import AppDashboard from '@/components/pages/AppDashboard.vue';
 
 const routes = [
-  { path: '/', component: LoginPage },
-  { path: '/register', component: RegisterPage },
-  { path: '/dashboard', component: DashboardPage },
+  { path: '/', component: AppLogin },
+  // { path: '/register', component: RegisterPage },
+  { path: '/app', component: AppDashboard },
 ]
 
 export default createRouter({
