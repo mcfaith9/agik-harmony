@@ -1,13 +1,51 @@
 <script setup>
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+  import { ref } from 'vue';
+  import axios from '@/lib/axios';
+  import { cn } from '@/lib/utils';
+  import { Button } from '@/components/ui/button';
+  import { Card, CardContent } from '@/components/ui/card';
+  import { Input } from '@/components/ui/input';
+  import { Label } from '@/components/ui/label';
 
-const props = defineProps({
-  class: { type: null, required: false },
-});
+  const props = defineProps({
+    class: { type: null, required: false },
+  });
+
+  const email = ref('');
+  const password = ref('');
+  const errors = ref(null);
+  const loading = ref(false);
+
+  async function getCsrfToken() {
+    await axios.get('/sanctum/csrf-cookie');
+  }
+
+  async function submitLogin() {
+    loading.value = true;
+    errors.value = null;
+
+    try {
+      await getCsrfToken();
+
+      await axios.post('/login', {
+        email: email.value,
+        password: password.value,
+      });
+
+      // On success, redirect to dashboard/home page
+      window.location.href = '/app';
+    } catch (err) {
+      if (err.response && err.response.data.errors) {
+        errors.value = err.response.data.errors;
+      } else if (err.response && err.response.data.message) {
+        errors.value = { general: [err.response.data.message] };
+      } else {
+        errors.value = { general: ['Login failed. Please try again.'] };
+      }
+    } finally {
+      loading.value = false;
+    }
+  }
 </script>
 
 <template>
