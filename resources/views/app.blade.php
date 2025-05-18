@@ -1,2 +1,12 @@
-@vite(['resources/css/app.css', 'resources/js/app.js'])
-<div id="app"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <title>My Vue App</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body>
+    <div id="app"></div>
+</body>
+</html>

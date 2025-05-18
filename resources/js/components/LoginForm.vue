@@ -2,6 +2,7 @@
   import { ref } from 'vue';
   import axios from '@/lib/axios';
   import { cn } from '@/lib/utils';
+  import { useRouter } from 'vue-router';
   import { Button } from '@/components/ui/button';
   import { Card, CardContent } from '@/components/ui/card';
   import { Input } from '@/components/ui/input';
@@ -13,37 +14,41 @@
 
   const email = ref('');
   const password = ref('');
-  const errors = ref(null);
-  const loading = ref(false);
+  const errorMessage = ref(null);
+  const router = useRouter();
 
-  async function getCsrfToken() {
-    await axios.get('/sanctum/csrf-cookie');
-  }
-
-  async function submitLogin() {
-    loading.value = true;
-    errors.value = null;
+  async function submitLogin(event) {
+    event.preventDefault();
+    errorMessage.value = null;
 
     try {
-      await getCsrfToken();
+      // Get CSRF cookie
+      await axios.get('/sanctum/csrf-cookie')
 
-      await axios.post('/login', {
-        email: email.value,
-        password: password.value,
+      await axios.request({
+        method: 'POST',
+        url: '/login',
+        headers: {
+          Accept: 'application/json',
+        },
+        data: {
+          email: email.value,
+          password: password.value,
+        }
+      }).catch(error => {
+        console.log(error);
       });
 
-      // On success, redirect to dashboard/home page
-      window.location.href = '/app';
-    } catch (err) {
-      if (err.response && err.response.data.errors) {
-        errors.value = err.response.data.errors;
-      } else if (err.response && err.response.data.message) {
-        errors.value = { general: [err.response.data.message] };
+      // Optional: get user info (if needed)
+      // const { data: user } = await axios.get('/api/user')
+
+      router.push('/app');
+    } catch (error) {
+      if (error.response && error.response.status === 422) {
+        errorMessage.value = 'Invalid email or password.'
       } else {
-        errors.value = { general: ['Login failed. Please try again.'] };
+        errorMessage.value = 'Something went wrong. Please try again.'
       }
-    } finally {
-      loading.value = false;
     }
   }
 </script>
@@ -52,7 +57,7 @@
   <div :class="cn('flex flex-col gap-6', props.class)">
     <Card class="overflow-hidden p-0">
       <CardContent class="grid p-0 md:grid-cols-2">
-        <form class="p-6 md:p-8">
+        <form class="p-6 md:p-8" @submit="submitLogin">
           <div class="flex flex-col gap-6">
             <div class="flex flex-col items-center text-center">
               <h1 class="text-2xl font-bold">Welcome back</h1>
@@ -66,6 +71,7 @@
                 id="email"
                 type="email"
                 placeholder="m@example.com"
+                v-model="email"
                 required
               />
             </div>
@@ -79,7 +85,7 @@
                   Forgot your password?
                 </a>
               </div>
-              <Input id="password" type="password" required />
+              <Input id="password" type="password" v-model="password" required />
             </div>
             <Button type="submit" class="w-full"> Login </Button>
             <div
