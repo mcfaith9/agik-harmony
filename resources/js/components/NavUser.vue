@@ -1,39 +1,56 @@
 <script setup>
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from 'lucide-vue-next';
+  import axios from '@/lib/axios';
+  import { useRouter } from 'vue-router';
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '@/components/ui/avatar';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from '@/components/ui/sidebar';
+  const router = useRouter();
 
-const props = defineProps({
-  user: { type: Object, required: true },
-});
+  async function logoutUser() {
+    try {
+      await axios.post('/logout', {}, { withCredentials: true });
+      console.log('✅ Logged out');
 
-const { isMobile } = useSidebar();
+      router.push('/');
+
+    } catch (error) {
+      console.error('❌ Logout failed:', error);
+    }
+  }
+
+  import {
+    BadgeCheck,
+    Bell,
+    ChevronsUpDown,
+    CreditCard,
+    LogOut,
+    Sparkles,
+  } from 'lucide-vue-next';
+
+  import {
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+  } from '@/components/ui/avatar';
+  import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+  } from '@/components/ui/dropdown-menu';
+  import {
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    useSidebar,
+  } from '@/components/ui/sidebar';
+
+  const props = defineProps({
+    user: { type: Object, required: true },
+  });
+
+  const { isMobile } = useSidebar();
 </script>
 
 <template>
@@ -97,7 +114,7 @@ const { isMobile } = useSidebar();
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem @click="logoutUser" class="cursor-pointer">
             <LogOut />
             Log out
           </DropdownMenuItem>
