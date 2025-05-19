@@ -1,21 +1,7 @@
 <script setup>
   import axios from '@/lib/axios';
   import { useRouter } from 'vue-router';
-
-  const router = useRouter();
-
-  async function logoutUser() {
-    try {
-      await axios.post('/logout', {}, { withCredentials: true });
-      console.log('✅ Logged out');
-
-      router.push('/');
-
-    } catch (error) {
-      console.error('❌ Logout failed:', error);
-    }
-  }
-
+  import { computed } from 'vue'; 
   import {
     BadgeCheck,
     Bell,
@@ -46,6 +32,32 @@
     useSidebar,
   } from '@/components/ui/sidebar';
 
+  const router = useRouter();
+
+  async function logoutUser() {
+    try {
+      await axios.post('/logout', {}, { withCredentials: true });
+      router.push('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  }
+
+  const userInitials = computed(() => {
+    if (!props.user?.name) return '';
+
+    const parts = props.user.name.trim().split(' ');
+
+    if (parts.length === 1) {
+      return parts[0][0]?.toUpperCase() ?? '';
+    }
+
+    return (
+      (parts[0][0] ?? '').toUpperCase() +
+      (parts[1][0] ?? '').toUpperCase()
+    );
+  });
+
   const props = defineProps({
     user: { type: Object, required: true },
   });
@@ -58,13 +70,12 @@
     <SidebarMenuItem>
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
-          <SidebarMenuButton
-            size="lg"
-            class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-          >
+          <SidebarMenuButton 
+            size="lg" 
+            class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
             <Avatar class="h-8 w-8 rounded-lg">
               <AvatarImage src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg" :alt="user.name" />
-              <AvatarFallback class="rounded-lg"> CN </AvatarFallback>
+              <AvatarFallback class="rounded-lg">{{ userInitials }}</AvatarFallback>
             </Avatar>
             <div class="grid flex-1 text-left text-sm leading-tight">
               <span class="truncate font-medium">{{ user.name }}</span>
@@ -83,7 +94,7 @@
             <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
               <Avatar class="h-8 w-8 rounded-lg">
                 <AvatarImage src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg" :alt="user.name" />
-                <AvatarFallback class="rounded-lg"> CN </AvatarFallback>
+                <AvatarFallback class="rounded-lg">{{ userInitials }}</AvatarFallback>
               </Avatar>
               <div class="grid flex-1 text-left text-sm leading-tight">
                 <span class="truncate font-semibold">{{ user.name }}</span>
@@ -91,28 +102,6 @@
               </div>
             </div>
           </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <Sparkles />
-              Upgrade to Pro
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <BadgeCheck />
-              Account
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <CreditCard />
-              Billing
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Bell />
-              Notifications
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem @click="logoutUser" class="cursor-pointer">
             <LogOut />
