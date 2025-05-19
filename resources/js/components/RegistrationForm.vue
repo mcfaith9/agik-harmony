@@ -1,11 +1,13 @@
 <script setup lang="ts">
   import { ref } from 'vue';
+  import { useRouter } from 'vue-router';
   import axios from 'axios';
+  import { toast } from 'vue-sonner';
+
   import { Button } from '@/components/ui/button';
   import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
   import { Input } from '@/components/ui/input';
   import { Label } from '@/components/ui/label';
-  import { toast } from 'vue-sonner';
 
   const form = ref({
     first_name: '',
@@ -13,6 +15,8 @@
     email: '',
     password: '',
   });
+
+  const router = useRouter();
 
   async function register() {
     try {
@@ -23,8 +27,21 @@
         password_confirmation: form.value.password,
       });
 
+      form.value = {
+        first_name: '',
+        last_name: '',
+        email: '',
+        password: '',
+      }
+
       toast('Account created!', {
-        description: 'You can now sign in.',
+        description: 'Your account has been created successfully.',
+        action: {
+          label: 'Go to login',
+          onClick: () => {
+            router.push('/');
+          },
+        },
       });
     } catch (err: any) {
       toast('Registration failed', {
@@ -72,7 +89,7 @@
 
         <div class="mt-4 text-center text-sm">
           Already have an account?
-          <a href="#" class="underline">Sign in</a>
+          <a href="/" class="underline">Sign in</a>
         </div>
       </CardContent>
     </form>
