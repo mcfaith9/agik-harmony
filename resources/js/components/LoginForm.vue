@@ -2,6 +2,7 @@
   import { ref } from 'vue';
   import axios from '@/lib/axios';
   import { cn } from '@/lib/utils';
+  import { loading } from '@/lib/loading';
   import { useRouter } from 'vue-router';
   import { Button } from '@/components/ui/button';
   import { Card, CardContent } from '@/components/ui/card';
@@ -40,10 +41,12 @@
         console.log(error);
       });
 
-      // Optional: get user info (if needed)
-      // const { data: user } = await axios.get('/api/user')
+      loading.value = true;
+      setTimeout(() => {
+        loading.value = false;
+        router.push('/app');
+      }, 3000);
 
-      router.push('/app');
     } catch (error) {
       if (error.response && error.response.status === 422) {
         errorMessage.value = 'Invalid email or password.'

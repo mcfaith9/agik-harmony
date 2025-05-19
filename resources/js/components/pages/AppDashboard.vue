@@ -1,10 +1,5 @@
-<script>
-	export const description = 'A sidebar that collapses to icons.';
-	export const iframeHeight = '800px';
-	export const containerClass = 'w-full h-full';
-</script>
-
 <script setup>
+	import { ref } from 'vue';
 	import DarkMode from '@/components/DarkMode.vue';
 	import AppSidebar from '@/components/AppSidebar.vue';
 	import {
@@ -21,11 +16,26 @@
 		SidebarProvider,
 		SidebarTrigger,
 	} from '@/components/ui/sidebar';
+	
+	import ProjectContainer from '@/components/pages/ProjectContainer.vue';
+	import TaskContainer from '@/components/pages/TaskContainer.vue';
+
+	const currentPage = ref('task');
+	const version = import.meta.env.VITE_APP_VERSION;
+
+	const pages = {
+	  task: TaskContainer,
+	  project: ProjectContainer,
+	};
+
+	function switchPage(pageName) {
+	  currentPage.value = pageName;
+	}
 </script>
 
 <template>
 	<SidebarProvider>
-		<AppSidebar />
+		<AppSidebar @change-page="switchPage" />
 		<SidebarInset>
 			<header class="flex justify-between h-16 shrink-0 items-center gap-2 px-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
 				<div class="flex items-center gap-2">
@@ -49,12 +59,11 @@
 				<DarkMode />
 			</header>
 			<div class="flex flex-1 flex-col gap-4 p-4 pt-0">
-				<div class="grid auto-rows-min gap-4 md:grid-cols-3">
-					<div class="bg-muted/50 aspect-video rounded-xl" />
-					<div class="bg-muted/50 aspect-video rounded-xl" />
-					<div class="bg-muted/50 aspect-video rounded-xl" />
+				<component :is="pages[currentPage]" />
+
+				<div class="fixed bottom-4 right-4 z-50 text-sm px-3 py-1">
+					version {{ version }}
 				</div>
-				<div class="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
 			</div>
 		</SidebarInset>
 	</SidebarProvider>

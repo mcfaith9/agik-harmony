@@ -1,29 +1,35 @@
 <script setup>
-import { ChevronRight } from 'lucide-vue-next';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
-import {
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-} from '@/components/ui/sidebar';
+  import { ChevronRight, HeartPlus } from 'lucide-vue-next';
+  import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+  } from '@/components/ui/collapsible';
+  import {
+    SidebarGroup,
+    SidebarGroupLabel,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubButton,
+    SidebarMenuSubItem,
+  } from '@/components/ui/sidebar';
 
-defineProps({
-  items: { type: Array, required: true },
-});
+  defineProps({
+    items: { type: Array, required: true },
+  });
+
+  const emit = defineEmits(['change-page']);
+
+  function onMenuItemClick(pageName) {
+    emit('change-page', pageName);
+  }
 </script>
 
 <template>
   <SidebarGroup>
-    <SidebarGroupLabel>Platform</SidebarGroupLabel>
+    <SidebarGroupLabel>Home</SidebarGroupLabel>
     <SidebarMenu>
       <Collapsible
         v-for="item in items"
@@ -44,20 +50,25 @@ defineProps({
           </CollapsibleTrigger>
           <CollapsibleContent>
             <SidebarMenuSub>
-              <SidebarMenuSubItem
-                v-for="subItem in item.items"
-                :key="subItem.title"
-              >
-                <SidebarMenuSubButton as-child>
-                  <a :href="subItem.url">
-                    <span>{{ subItem.title }}</span>
-                  </a>
+              <SidebarMenuSubItem v-for="subItem in item.items" :key="subItem.title">
+                <SidebarMenuSubButton 
+                  class="cursor-pointer select-none"
+                  as-child 
+                  @click.prevent="onMenuItemClick(subItem.url)">
+                  <span>{{ subItem.title }}</span>
                 </SidebarMenuSubButton>
               </SidebarMenuSubItem>
             </SidebarMenuSub>
           </CollapsibleContent>
         </SidebarMenuItem>
       </Collapsible>
+
+      <SidebarMenuItem>
+        <SidebarMenuButton class="cursor-pointer">
+          <HeartPlus />
+          <span>Support</span>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
     </SidebarMenu>
   </SidebarGroup>
 </template>

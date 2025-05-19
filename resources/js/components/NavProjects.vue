@@ -1,5 +1,5 @@
 <script setup>
-import { Folder, Forward, MoreHorizontal, Trash2 } from 'lucide-vue-next';
+import { Folder, Forward, MoreHorizontal, Trash2} from 'lucide-vue-next';
 
 import {
   DropdownMenu,
@@ -63,12 +63,6 @@ const { isMobile } = useSidebar();
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </SidebarMenuItem>
-      <SidebarMenuItem>
-        <SidebarMenuButton class="text-sidebar-foreground/70">
-          <MoreHorizontal class="text-sidebar-foreground/70" />
-          <span>More</span>
-        </SidebarMenuButton>
       </SidebarMenuItem>
     </SidebarMenu>
   </SidebarGroup>
