@@ -1,17 +1,20 @@
 <script setup>
-  import { ref, onMounted } from 'vue';
+  import { ref, watch, provide } from 'vue';
   import axios from 'axios';
   import { Toaster } from '@/components/ui/sonner';
+  import { useRouter, useRoute } from 'vue-router';
 
-  const loading = ref(true);
+  import AppLoader from '@/components/pages/AppLoader.vue';
 
-  onMounted(async () => {
-    try {
-      // await axios.get('/api/user', { withCredentials: true });
-    } catch (error) {
-      // handle error or unauthenticated state
-      console.log(error);
-    } finally {
+  const loading = ref(false);
+  const router = useRouter();
+  const route = useRoute();
+
+  watch(route, async (newRoute, oldRoute) => {
+    if (newRoute.path === '/app') {
+      loading.value = true;
+      // Show loader for 3 seconds after login navigation
+      await new Promise(resolve => setTimeout(resolve, 3000));
       loading.value = false;
     }
   });
@@ -19,6 +22,6 @@
 
 <template>
   <Toaster />
-  <div v-if="loading">Loading...</div>
+  <AppLoader v-if="loading" />
   <router-view v-else />
 </template>
