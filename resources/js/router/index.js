@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { user, fetchUser } from '@/lib/user.js';
 
 import AppLogin from '@/components/pages/AppLogin.vue';
-// import RegisterPage from '@/components/pages/RegisterPage.vue';
+import AppRegister from '@/components/pages/AppRegister.vue';
 import AppDashboard from '@/components/pages/AppDashboard.vue';
 
 const routes = [
@@ -12,7 +12,12 @@ const routes = [
     component: AppLogin,
     meta: { requiresAuth: false },
   },
-  // { path: '/register', component: RegisterPage },
+  { 
+    path: '/register', 
+    name: 'register',
+    component: AppRegister,
+    meta: { requiresAuth: false },
+  },
   { 
     path: '/app', 
     name: 'app',

@@ -1,7 +1,3 @@
-<script>
-    export const description = 'A login page with form and image.';
-</script>
-
 <script setup>
     import LoginForm from '@/components/LoginForm.vue';
 </script>
