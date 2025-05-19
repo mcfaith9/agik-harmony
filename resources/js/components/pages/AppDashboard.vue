@@ -1,36 +1,67 @@
 <script setup>
-	import { ref } from 'vue';
-	import DarkMode from '@/components/DarkMode.vue';
-	import AppSidebar from '@/components/AppSidebar.vue';
-	import {
-		Breadcrumb,
-		BreadcrumbItem,
-		BreadcrumbLink,
-		BreadcrumbList,
-		BreadcrumbPage,
-		BreadcrumbSeparator,
-	} from '@/components/ui/breadcrumb';
-	import { Separator } from '@/components/ui/separator';
-	import {
-		SidebarInset,
-		SidebarProvider,
-		SidebarTrigger,
-	} from '@/components/ui/sidebar';
-	
-	import ProjectContainer from '@/components/pages/ProjectContainer.vue';
-	import TaskContainer from '@/components/pages/TaskContainer.vue';
+import { ref } from 'vue';
+import DarkMode from '@/components/DarkMode.vue';
+import AppSidebar from '@/components/AppSidebar.vue';
+import {
+	Breadcrumb,
+	BreadcrumbItem,
+	BreadcrumbLink,
+	BreadcrumbList,
+	BreadcrumbPage,
+	BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import { Separator } from '@/components/ui/separator';
+import {
+	SidebarInset,
+	SidebarProvider,
+	SidebarTrigger,
+} from '@/components/ui/sidebar';
 
-	const currentPage = ref('task');
-	const version = import.meta.env.VITE_APP_VERSION;
+import ProjectContainer from '@/components/pages/ProjectContainer.vue';
+import TaskContainer from '@/components/pages/TaskContainer.vue';
+import TimesheetContainer from '@/components/pages/TimesheetContainer.vue';
 
-	const pages = {
-	  task: TaskContainer,
-	  project: ProjectContainer,
-	};
+const currentPage = ref('task');
+const parent = ref('work');
 
-	function switchPage(pageName) {
-	  currentPage.value = pageName;
+const version = import.meta.env.VITE_APP_VERSION;
+
+const pages = {
+	task: TaskContainer,
+	project: ProjectContainer,
+	timesheet: TimesheetContainer,
+};
+
+const breadcrumbTitles = {
+	work: 'Work',
+	settings: 'Settings',
+	admin: 'Admin',
+	task: 'Tasks',
+	project: 'Projects',
+	timesheet: 'Timesheet',
+	general: 'General',
+	accounts: 'Accounts',
+	users: 'Users',
+	roles: 'Roles',
+};
+
+const menuStructure = {
+	work: ['task', 'project', 'timesheet'],
+	settings: ['general', 'accounts'],
+	admin: ['users', 'roles'],
+};
+
+function findParent(pageName) {
+	for (const [parentName, children] of Object.entries(menuStructure)) {
+		if (children.includes(pageName)) return parentName;
 	}
+	return null;
+}
+
+function switchPage(pageName) {
+	currentPage.value = pageName;
+	parent.value = findParent(pageName);
+}
 </script>
 
 <template>
@@ -44,13 +75,15 @@
 					<Breadcrumb>
 						<BreadcrumbList>
 							<BreadcrumbItem class="hidden md:block">
-								<BreadcrumbLink href="#">
-									Building Your Application
-								</BreadcrumbLink>
+								<BreadcrumbLink href="#">App</BreadcrumbLink>
+							</BreadcrumbItem>
+							<BreadcrumbSeparator class="hidden md:block" />
+							<BreadcrumbItem v-if="parent && breadcrumbTitles[parent]">
+								<BreadcrumbLink href="#">{{ breadcrumbTitles[parent] }}</BreadcrumbLink>
 							</BreadcrumbItem>
 							<BreadcrumbSeparator class="hidden md:block" />
 							<BreadcrumbItem>
-								<BreadcrumbPage>Data Fetching</BreadcrumbPage>
+								<BreadcrumbPage>{{ breadcrumbTitles[currentPage] }}</BreadcrumbPage>
 							</BreadcrumbItem>
 						</BreadcrumbList>
 					</Breadcrumb>

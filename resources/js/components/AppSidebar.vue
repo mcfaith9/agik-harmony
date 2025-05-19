@@ -67,7 +67,7 @@
           },
           {
             title: 'Timesheet',
-            url: '#',
+            url: 'timesheet',
           },
         ],
       },
