@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/sidebar';
 
 import ProjectContainer from '@/components/pages/ProjectContainer.vue';
-import TaskContainer from '@/components/pages/TaskContainer.vue';
+import TaskContainer from '@/components/pages/task/TaskContainer.vue';
 import TimesheetContainer from '@/components/pages/TimesheetContainer.vue';
 
 const currentPage = ref('task');
@@ -68,8 +68,8 @@ function switchPage(pageName) {
 	<SidebarProvider>
 		<AppSidebar @change-page="switchPage" />
 		<SidebarInset>
-			<header class="flex justify-between h-16 shrink-0 items-center gap-2 px-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-				<div class="flex items-center gap-2">
+			<header class="flex justify-between h-16 shrink-0 items-center gap-2 px-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 sticky top-0">
+				<div class="flex items-center gap-2 bg-white rounded-full">
 					<SidebarTrigger class="-ml-1" />
 					<Separator orientation="vertical" class="mr-2 data-[orientation=vertical]:h-4" />
 					<Breadcrumb>
@@ -92,7 +92,9 @@ function switchPage(pageName) {
 				<DarkMode />
 			</header>
 			<div class="flex flex-1 flex-col gap-4 p-4 pt-0">
-				<component :is="pages[currentPage]" />
+				<div class="mt-2">
+					<component :is="pages[currentPage]" />
+				</div>
 
 				<div class="fixed bottom-4 right-4 z-50 text-sm px-3 py-1">
 					version {{ version }}
